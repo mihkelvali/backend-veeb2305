@@ -24,6 +24,6 @@ app.post('/api/treks', (req, res) => {
   res.status(201).send('Sent the new data to the DB ...')
 });
 
-app.listen(5070, () => {
-    console.log("Server running on port 5070");
+app.listen(10000, () => {
+    console.log("Server running on port 10000");
 });

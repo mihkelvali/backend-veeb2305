@@ -15,17 +15,63 @@ app.get('/', (req, res) => {
 app.get('/api/treks', async (req, res) => {
   try {
     const { rows } = await pool.query(
-        'SELECT * FROM treks;'
+      'SELECT * FROM treks;'
     );
     res.json(rows);
   } catch (error) {
     console.log(error);
-    res.status(500).send(error.message)
+    res.status(500).json({error: error.message});
   }
 });
 
-app.post('/api/treks', (req, res) => {
-  res.status(201).send('Sent the new data to the DB ...')
+app.post('/api/treks', async (req, res) => {
+  console.log(req.body);
+  try {
+    const { rows } = await pool.query(`
+      INSERT INTO treks (
+        name,
+        latitude,
+        longitude,
+        price,
+        image_url,
+        start_time,
+        end_time,
+        description
+      ) VALUES (
+        '${req.body.name}',
+        '${req.body.latitude}',
+        '${req.body.longitude}',
+        '${req.body.price}',
+        '${req.body.imageUrl}',
+        '${req.body.startTime}',
+        '${req.body.endTime}',
+        '${req.body.description}'
+      );
+    `);
+    res.status(201).json(rows);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({error: error.message});
+  }
+});
+
+app.put('/api/treks/:trekId', async (req, res) => {
+  const trekId = req.params.trekId;
+  console.log(req.body);
+
+  try {
+    const { rows } = await pool.query(`
+      UPDATE treks 
+      SET
+        name = '${req.body.name}',
+        latitude = '${req.body.latitude}'
+      WHERE id = ${trekId};
+    `);
+    res.json(rows);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({error: error.message});
+  }
 });
 
 app.listen(10000, () => {

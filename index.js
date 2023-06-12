@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
 app.get('/api/treks', async (req, res) => {
   try {
     const { rows } = await pool.query(
-      'SELECT * FROM treks;'
+      'SELECT * FROM treks ORDER BY id;'
     );
     res.json(rows);
   } catch (error) {
@@ -42,9 +42,9 @@ app.post('/api/treks', async (req, res) => {
         '${req.body.latitude}',
         '${req.body.longitude}',
         '${req.body.price}',
-        '${req.body.imageUrl}',
-        '${req.body.startTime}',
-        '${req.body.endTime}',
+        '${req.body.image_url}',
+        '${req.body.start_time}',
+        '${req.body.end_time}',
         '${req.body.description}'
       );
     `);
@@ -57,14 +57,19 @@ app.post('/api/treks', async (req, res) => {
 
 app.put('/api/treks/:trekId', async (req, res) => {
   const trekId = req.params.trekId;
-  console.log(req.body);
-
+  console.log(trekId, req.body);
   try {
     const { rows } = await pool.query(`
       UPDATE treks 
       SET
         name = '${req.body.name}',
-        latitude = '${req.body.latitude}'
+        latitude = '${req.body.latitude}',
+        longitude = '${req.body.longitude}',
+        price = '${req.body.price}',
+        image_url = '${req.body.image_url}',
+        start_time = '${req.body.start_time}',
+        end_time = '${req.body.end_time}',
+        description = '${req.body.description}'
       WHERE id = ${trekId};
     `);
     res.json(rows);
@@ -73,6 +78,20 @@ app.put('/api/treks/:trekId', async (req, res) => {
     res.status(500).json({error: error.message});
   }
 });
+
+app.delete('/api/treks/:trekId', async (req, res) => {
+  const trekId = req.params.trekId;
+  console.log('deleting with id:', trekId);
+  try {
+    const { rows } = await pool.query(`
+    DELETE FROM treks WHERE id = ${trekId};
+    `);
+    res.json(rows);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({error: error.message});
+  }
+})
 
 app.listen(10000, () => {
     console.log("Server running on port 10000");

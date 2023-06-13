@@ -38,14 +38,7 @@ app.post('/api/treks', async (req, res) => {
         end_time,
         description
       ) VALUES (
-        '$1',
-        '$2',
-        '$3',
-        '$4',
-        '$5',
-        '$6',
-        '$7',
-        '$8'
+        $1, $2, $3, $4, $5, $6, $7, $8
       );
     `, [
       req.body.name,
@@ -72,14 +65,14 @@ async (req, res) => {
     const { rows } = await pool.query(`
       UPDATE treks 
       SET
-        name = '$1',
-        latitude = '$2',
-        longitude = '$3',
-        price = '$4',
-        image_url = '$5',
-        start_time = '$6',
-        end_time = '$7',
-        description = '$8'
+        name = $1,
+        latitude = $2,
+        longitude = $3,
+        price = $4,
+        image_url = $5,
+        start_time = $6,
+        end_time = $7,
+        description = $8
       WHERE id = $9;
     `, [
       req.body.name,

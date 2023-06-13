@@ -38,16 +38,25 @@ app.post('/api/treks', async (req, res) => {
         end_time,
         description
       ) VALUES (
-        '${req.body.name}',
-        '${req.body.latitude}',
-        '${req.body.longitude}',
-        '${req.body.price}',
-        '${req.body.image_url}',
-        '${req.body.start_time}',
-        '${req.body.end_time}',
-        '${req.body.description}'
+        '$1',
+        '$2',
+        '$3',
+        '$4',
+        '$5',
+        '$6',
+        '$7',
+        '$8'
       );
-    `);
+    `, [
+      req.body.name,
+      req.body.latitude,
+      req.body.longitude,
+      req.body.price,
+      req.body.image_url,
+      req.body.start_time,
+      req.body.end_time,
+      req.body.description
+    ]);
     res.status(201).json(rows);
   } catch (error) {
     console.log(error);
@@ -55,23 +64,34 @@ app.post('/api/treks', async (req, res) => {
   }
 });
 
-app.put('/api/treks/:trekId', async (req, res) => {
+app.put('/api/treks/:trekId',
+async (req, res) => {
   const trekId = req.params.trekId;
   console.log(trekId, req.body);
   try {
     const { rows } = await pool.query(`
       UPDATE treks 
       SET
-        name = '${req.body.name}',
-        latitude = '${req.body.latitude}',
-        longitude = '${req.body.longitude}',
-        price = '${req.body.price}',
-        image_url = '${req.body.image_url}',
-        start_time = '${req.body.start_time}',
-        end_time = '${req.body.end_time}',
-        description = '${req.body.description}'
-      WHERE id = ${trekId};
-    `);
+        name = '$1',
+        latitude = '$2',
+        longitude = '$3',
+        price = '$4',
+        image_url = '$5',
+        start_time = '$6',
+        end_time = '$7',
+        description = '$8'
+      WHERE id = $9;
+    `, [
+      req.body.name,
+      req.body.latitude,
+      req.body.longitude,
+      req.body.price,
+      req.body.image_url,
+      req.body.start_time,
+      req.body.end_time,
+      req.body.description,
+      trekId
+    ]);
     res.json(rows);
   } catch (error) {
     console.log(error);
@@ -84,8 +104,8 @@ app.delete('/api/treks/:trekId', async (req, res) => {
   console.log('deleting with id:', trekId);
   try {
     const { rows } = await pool.query(`
-    DELETE FROM treks WHERE id = ${trekId};
-    `);
+    DELETE FROM treks WHERE id = $1;
+    `, [trekId]);
     res.json(rows);
   } catch (error) {
     console.log(error);
